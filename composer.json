@@ -1,0 +1,15 @@
+{
+  "name": "Eazy PHP Framework",
+  "description": "this is a simple PHP framework with MVC design patten, and on updating...",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Minh Phan",
+      "email": "phanminh65@gmail.com"
+    }
+  ],
+  "require": {
+    "phpmailer/phpmailer": "^5.2"
+  }
+}

@@ -1,0 +1,13 @@
+#Rewrite rules
+RewriteEngine on
+RewriteRule ^resource/css/(.*)$ /Public/css/$1 [L]
+RewriteRule ^page/(.*)$ /content/page/$1 [L]
+RewriteRule ^resource/js/(.*)$	/Public/js/$1 [L]
+RewriteRule ^resource/img/(.*)$	/Public/img/$1 [L]
+RewriteRule ^resource/fonts/(.*)$	/Public/fonts/$1 [L]
+RewriteRule ^admin/([0-9a-zA-Z\_\-\/]*)$ index.php?end=admin&page=$1 [QSA]
+RewriteRule ^admin$ index.php?end=admin&page= [QSA]
+RewriteRule ^api/([0-9a-zA-Z\_\-\/]*)$ index.php?end=api&page=$1 [QSA]
+RewriteRule ^api$ index.php?end=api&page= [QSA]
+RewriteRule ^([0-9a-zA-Z\_\-\/]*)$ index.php?end=front&page=$1 [QSA]
+#Compression Deflate
