@@ -8,17 +8,20 @@
 
 namespace Controllers\Application;
 
-use Library\Tools;
-
 
 class Index extends AppController
 {
     public function indexAction()
     {
+        global $connection;
+        $co = $connection->getCo();
+        $userModel = new \Models\User($co);
+        $result = $userModel->fetchAll();
+        var_dump($result);
         $this->render([
             'test' => " ahihi "
         ], 'index/index');
-        Tools\Mmail::send('phanminh65@gmail.com', 'ahihi', json_encode($_SERVER));
+//        Tools\Mmail::send('phanminh65@gmail.com', 'ahihi', json_encode($_SERVER));
     }
 
 }

@@ -10,6 +10,69 @@ namespace Library\Core;
 
 use PDO;
 
+class MyPDO extends PDO
+{
+    protected $_table_prefix;
+    protected $_table_suffix;
+
+    /**
+     * MyPDO constructor.
+     * @param $dsn
+     * @param null $user
+     * @param null $password
+     * @param array $driver_options
+     * @param null $prefix
+     * @param null $suffix
+     */
+    public function __construct($dsn, $user = null, $password = null, $driver_options = array(), $prefix = null, $suffix = null)
+    {
+        $this->_table_prefix = $prefix;
+        $this->_table_suffix = $suffix;
+        parent::__construct($dsn, $user, $password, $driver_options);
+    }
+
+    /**
+     * @param string $statement
+     * @return int
+     */
+    public function exec($statement)
+    {
+        $statement = $this->_tablePrefixSuffix($statement);
+        return parent::exec($statement);
+    }
+
+    protected function _tablePrefixSuffix($statement)
+    {
+        return sprintf($statement, $this->_table_prefix, $this->_table_suffix);
+    }
+
+    /**
+     * @param string $statement
+     * @param array $driver_options
+     * @return \PDOStatement
+     */
+    public function prepare($statement, $driver_options = array())
+    {
+        $statement = $this->_tablePrefixSuffix($statement);
+        return parent::prepare($statement, $driver_options);
+    }
+
+    /**
+     * @param string $statement
+     * @return mixed|\PDOStatement
+     */
+    public function query($statement)
+    {
+        $statement = $this->_tablePrefixSuffix($statement);
+        $args = func_get_args();
+        if (count($args) > 1) {
+            return call_user_func_array(array($this, 'parent::query'), $args);
+        } else {
+            return parent::query($statement);
+        }
+    }
+}
+
 /**
  * Connection class
  * Make db connect with PDO
@@ -33,7 +96,7 @@ class Connection
     public function connectDb($host = DB_HOST, $dbname = DB_NAME, $user = DB_USER, $password = DB_PASSWORD, $charset = DB_CHARSET/*, $offset = OFFSET*/)
     {
         try {
-            $this->co = new PDO('mysql:host=' . $host . ';dbname=' . $dbname, $user, $password);
+            $this->co = new MyPDO('mysql:host=' . $host . ';dbname=' . $dbname, $user, $password);
             $this->co->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
             $this->co->exec("SET CHARACTER SET $charset");
             $this->co->exec("set names utf8");
@@ -45,7 +108,6 @@ class Connection
 
     /**
      * @return connection object
-     * Phương thức cho phép lấy lại kết nối đang dùng
      * This method allows retrieve the current connection
      */
     public function getCo()
